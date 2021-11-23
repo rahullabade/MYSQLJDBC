@@ -39,7 +39,6 @@ public class Database {
         while (driverList.hasMoreElements()) {
             Driver driverClass = driverList.nextElement();
             System.out.println(" " + driverClass.getClass().getName());
-
         }
     }
 }

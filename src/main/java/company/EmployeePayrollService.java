@@ -1,12 +1,37 @@
 package company;
 
-import java.sql.SQLException;
 import java.util.List;
 
 public class EmployeePayrollService {
-        public List<EmployeePayrollData> readEmployeePayroll() throws SQLException {
-            List<EmployeePayrollData> employeePayRollList;
-            employeePayRollList = new EmployeePayrollDBService().readData();
-            return employeePayRollList;
-        }
+    private List<EmployeePayrollData> employeePayRollList;
+    private EmployeePayrollDBService employeePayrollDBService;
+
+    public EmployeePayrollService() {
+        employeePayrollDBService = EmployeePayrollDBService.getInstance();
+    }
+
+    public List<EmployeePayrollData> readEmployeePayroll() {
+        this.employeePayRollList = new EmployeePayrollDBService().readData();
+        this.employeePayRollList = EmployeePayrollDBService.getInstance().readData();
+        return employeePayRollList;
+    }
+
+    public void updateEmployeeSalary(String name, double salary) {
+        int result = employeePayrollDBService.updateEmployeeData(name, salary);
+        if (result == 0) return;
+        EmployeePayrollData employeePayRollData = this.getEmployeePayRollData(name);
+        if (employeePayRollData != null)
+            employeePayRollData.salary = salary;
+    }
+
+    private EmployeePayrollData getEmployeePayRollData(String name) {
+        EmployeePayrollData employeePayrollData;
+        employeePayrollData = this.employeePayRollList.stream().filter(employeePayrollDataItem -> employeePayrollDataItem.name.equals(name)).findFirst().orElse(null);
+        return employeePayrollData;
+    }
+
+    public boolean checkEmployeePayrollInSyncWithDB(String name) {
+        List<EmployeePayrollData> employeePayrollDataList = employeePayrollDBService.getEmployeePayrollData(name);
+        return employeePayrollDataList.get(0).equals(getEmployeePayRollData(name));
+    }
 }
