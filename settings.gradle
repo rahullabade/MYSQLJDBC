@@ -1,2 +1,3 @@
 rootProject.name = 'PayrollService'
+include 'company'
 
