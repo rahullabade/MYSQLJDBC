@@ -5,6 +5,7 @@ import org.junit.Test;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 public class EmployeePayrollService {
     @Test
@@ -13,7 +14,7 @@ public class EmployeePayrollService {
         List<EmployeePayrollData> employeePayrollData = employeePayrollService.readEmployeePayroll();
         for (EmployeePayrollData copy : employeePayrollData)
             System.out.println(copy);
-        Assert.assertEquals(3, employeePayrollData.size());
+        Assert.assertEquals(4, employeePayrollData.size());
     }
 
     @Test
@@ -37,6 +38,22 @@ public class EmployeePayrollService {
         List<EmployeePayrollData> employeePayRollDBData = employeePayRollDBService.readEmployeePayRollForDateRange(startDate, endDate);
         for (EmployeePayrollData data : employeePayRollDBData)
             System.out.println(data);
-        Assert.assertEquals(2, employeePayRollDBData.size());
+        Assert.assertEquals(3, employeePayRollDBData.size());
+    }
+
+    @Test
+    public void givenPayrollData_WhenAverageSalaryRetrieveByGender_ShouldReturnProperValue() {
+        EmployeePayrollService employeePayRollService = new EmployeePayrollService();
+        employeePayRollService.readEmployeePayroll();
+        Map<String, Double> averageSalaryByGender = employeePayRollService.readAverageSalaryByGender();
+        Assert.assertTrue(averageSalaryByGender.get("M").equals(2000000.00) && averageSalaryByGender.get("F").equals(3500000.00));
+    }
+
+    @Test
+    public void givenPayrollData_WhenCountByGender_ShouldReturnCount() {
+        EmployeePayrollService employeePayRollService = new EmployeePayrollService();
+        employeePayRollService.readEmployeePayroll();
+        Map<String, Integer> countByGender = employeePayRollService.readCountSalaryByGender();
+        Assert.assertTrue(countByGender.get("M").equals(2) && countByGender.get("F").equals(2));
     }
 }
